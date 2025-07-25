@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OtpMail;
 use App\Models\User;
+use App\Models\OTP;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class AuthController extends Controller
@@ -96,6 +99,28 @@ class AuthController extends Controller
         return response()->json($data, 201);
     }
 
+
+
+
+
+
+    /**
+     * @OA\Post(
+     *     path="/api/auth/send-otp",
+     *     tags={"Auth"},
+     *     summary="Send OTP to send url to change user's password",
+     *     description="Sending URL to change password",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email",},
+     *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Link ubah password sudah dikirim ke email yang diberikan"),
+     *     @OA\Response(response=404, description="Email tidak ditemukan"),
+     * )
+     */
     public function sendOtp(Request $request) {
         $request->validate([
             'email' => 'required|string'
@@ -116,8 +141,57 @@ class AuthController extends Controller
             'token' => $token
         ]);
 
+        Mail::to($user->email)->send(new OtpMail($token));
+
         return response()->json([
             'message' => 'Link ubah password sudah dikirim ke email yang diberikan',
+        ], 200);
+    }
+
+
+
+
+    /**
+     * @OA\Post(
+     *     path="/api/auth/forgot-password",
+     *     tags={"Auth"},
+     *     summary="Change User Password",
+     *     description="Changin Current user password",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"token", "password", "password_confirmation"},
+     *             @OA\Property(property="token", type="string", example="uuid"),
+     *             @OA\Property(property="password", type="string", format="password", example="password123"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="password123")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Password berhasil diubah"),
+     *     @OA\Response(response=404, description="Token yang diberikan tidak valid"),
+     * )
+     */
+    public function changePasswords(Request $request) {
+        $request->validate([
+            'password' =>  'string|required|min:8|confirmed',
+            'token' => 'string|required'
+        ]);
+
+        $otp = OTP::where('token', $request->token)->first();
+
+        if (!$otp) {
+            return response()->json([
+                "message" => "Token yang diberikan tidak valid"
+            ], 404);
+        }
+
+        $user = $otp->user;
+        $user->password = Hash::make($request->password);
+        $otp->delete();
+
+        $user->save();
+
+        return response()->json([
+            "message" => "Password berhasil diubah"
         ], 200);
     }
 }
