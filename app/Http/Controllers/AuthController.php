@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -93,5 +94,30 @@ class AuthController extends Controller
             'message' => "User registered successfully",
         ];
         return response()->json($data, 201);
+    }
+
+    public function sendOtp(Request $request) {
+        $request->validate([
+            'email' => 'required|string'
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Email tidak ditemukan'
+            ], 404);
+        }
+
+        $token = Str::uuid();
+
+        $otp = OTP::create([
+            'user_id' => $user->id,
+            'token' => $token
+        ]);
+
+        return response()->json([
+            'message' => 'Link ubah password sudah dikirim ke email yang diberikan',
+        ], 200);
     }
 }
