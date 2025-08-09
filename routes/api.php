@@ -19,4 +19,7 @@ Route::group(['prefix' => 'auth'], function () {
 Route::group(['prefix'=> 'news'], function () {
     Route::post('', [NewsController::class, 'create'])->middleware('auth:sanctum');
     Route::post('/{id}', [NewsController::class,'update'])->middleware('auth:sanctum');
+    Route::delete('/{id}', [NewsController::class, 'destroy'])->middleware('auth:sanctum');
+    Route::get('/{id}', [NewsController::class, 'show']);
+    Route::get('', [NewsController::class, 'index']);
 });

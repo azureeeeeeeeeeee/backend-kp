@@ -45,36 +45,107 @@ class NewsController extends Controller
                 'error' => 'Admin only'
             ], 403);
         };
-
+        
         $news = News::find($id);
-
+        
         if (!$news) {
             return response()->json([
                 "message" => "Berita dengan id $id tidak ditemukan"
             ], 404);
         };
-
+        
         $data = $request->validate([
             "title" => "required|string|max:255|min:8",
             "content" => "required|string|min:100",
             'image' => 'nullable|image|mimes:jpeg,png,jpg'
         ]);
-
+        
         $news->title = $data['title'];
         $news->content = $data['content'];
-
+        
         if ($request->hasFile('image')) {
             if ($news->thumbnail && Storage::disk('public')->exists($news->thumbnail)) {
                 Storage::disk('public')->delete($news->thumbnail);
             }
-
+            
             $path = $request->file('image')->store('news', 'public');
             $news->thumbnail = $path;
         }
         $news->save();
-
+        
         return response()->json([
             'message'=> "Berita berhasil diupdate"
+        ]);
+    }
+
+
+
+
+
+
+    
+    public function destroy($id) {
+        if (Gate::denies("delete", News::class)) {
+            return response()->json([
+                'error' => 'Admin only'
+            ], 403);
+        }
+
+        $news = News::find($id);
+
+        if (!$news) {
+            return response()->json([
+                'message' => "Berita dengan id $id tidak ditemukan"
+            ], 404);
+        }
+
+        if ($news->thumbnail && Storage::disk('public')->exists($news->thumbnail)) {
+            Storage::disk('public')->delete($news->thumbnail);
+        }
+
+        $news->delete();
+
+        return response()->json([
+            "message" => "Berita dengan id $id berhasil dihapus"
+        ]);
+    }
+
+
+
+
+
+
+
+
+
+    public function show($id) {
+        $news = News::find($id);
+
+        if (!$news) {
+            return response()->json([
+                "message" => "Berita dengan id $id tidak ditemukan"
+            ]);
+        }
+
+        return response()->json([
+            "message" => "Berita dengan id $id berhasil ditemukan",
+            "berita" => $news
+        ]);
+    }
+
+
+
+
+
+
+
+
+
+    public function index() {
+        $news = News::orderBy("id","desc")->paginate(10);
+        return response()->json([
+            'message' => 'Berhasil mengambil semua daftar berita',
+            'data' => $news
         ]);
     }
 }

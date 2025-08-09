@@ -39,13 +39,13 @@ class NewsPolicy
     {
         return $user->role == 'admin' ? Response::allow() : Response::deny('Admin only');
     }
-
+    
     /**
      * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, News $news): bool
+    */
+    public function delete(User $user)
     {
-        return false;
+        return $user->role == 'admin' ? Response::allow() : Response::deny('Admin only');
     }
 
     /**
