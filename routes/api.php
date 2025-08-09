@@ -18,4 +18,5 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::group(['prefix'=> 'news'], function () {
     Route::post('', [NewsController::class, 'create'])->middleware('auth:sanctum');
+    Route::post('/{id}', [NewsController::class,'update'])->middleware('auth:sanctum');
 });

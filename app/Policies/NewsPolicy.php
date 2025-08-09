@@ -35,9 +35,9 @@ class NewsPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, News $news): bool
+    public function update(User $user)
     {
-        return false;
+        return $user->role == 'admin' ? Response::allow() : Response::deny('Admin only');
     }
 
     /**

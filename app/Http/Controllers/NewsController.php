@@ -20,7 +20,7 @@ class NewsController extends Controller
         $request->validate([
             "title" => "required|string|max:255|min:8",
             "content" => "required|string|min:100",
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif'
         ]);
 
         $path = $request->file('image')->store('news', 'public');
@@ -34,6 +34,47 @@ class NewsController extends Controller
         return response()->json([
             'message' => 'News created successfully',
             'data'    => $news,
+        ]);
+    }
+
+
+
+    public function update(Request $request, $id) {
+        if (Gate::denies('update', News::class)) {
+            return response()->json([
+                'error' => 'Admin only'
+            ], 403);
+        };
+
+        $news = News::find($id);
+
+        if (!$news) {
+            return response()->json([
+                "message" => "Berita dengan id $id tidak ditemukan"
+            ], 404);
+        };
+
+        $data = $request->validate([
+            "title" => "required|string|max:255|min:8",
+            "content" => "required|string|min:100",
+            'image' => 'nullable|image|mimes:jpeg,png,jpg'
+        ]);
+
+        $news->title = $data['title'];
+        $news->content = $data['content'];
+
+        if ($request->hasFile('image')) {
+            if ($news->thumbnail && Storage::disk('public')->exists($news->thumbnail)) {
+                Storage::disk('public')->delete($news->thumbnail);
+            }
+
+            $path = $request->file('image')->store('news', 'public');
+            $news->thumbnail = $path;
+        }
+        $news->save();
+
+        return response()->json([
+            'message'=> "Berita berhasil diupdate"
         ]);
     }
 }
