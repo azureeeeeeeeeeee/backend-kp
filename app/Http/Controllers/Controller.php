@@ -16,6 +16,10 @@ namespace App\Http\Controllers;
  *     name="News",
  *     description="API endpoints for news related operations"
  * )
+ * @OA\Tag(
+ *     name="Gallery",
+ *     description="API endpoints for gallery related operations"
+ * )
  **/
 abstract class Controller
 {

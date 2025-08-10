@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\NewsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,4 +23,16 @@ Route::group(['prefix'=> 'news'], function () {
     Route::delete('/{id}', [NewsController::class, 'destroy'])->middleware('auth:sanctum');
     Route::get('/{id}', [NewsController::class, 'show']);
     Route::get('', [NewsController::class, 'index']);
+});
+
+Route::group(['prefix' => 'gallery'], function () {
+    Route::post('', [GalleryController::class, 'addActivity'])->middleware('auth:sanctum');
+    Route::put('/{id}', [GalleryController::class, 'editActivity'])->middleware('auth:sanctum');
+    Route::delete('/{id}', [GalleryController::class, 'deleteActivity'])->middleware('auth:sanctum');
+
+    Route::get('/{id}', [GalleryController::class, 'getSingleActivity']);
+    Route::get('', [GalleryController::class, 'getAllActivity']);
+
+    Route::post('/{id}/media', [GalleryController::class, 'addImage'])->middleware('auth:sanctum');
+    Route::delete('/{id}/media', [GalleryController::class, 'deleteImage'])->middleware('auth:sanctum');
 });

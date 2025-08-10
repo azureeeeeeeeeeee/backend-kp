@@ -192,6 +192,274 @@
                 }
             }
         },
+        "/api/gallery": {
+            "post": {
+                "tags": [
+                    "Gallery"
+                ],
+                "summary": "Create a new gallery activity",
+                "operationId": "c6d480342ac5ecc99ea587c18b70c1a8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "activity_date"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Lomba 17 Agustus"
+                                    },
+                                    "activity_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-08-10"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Galeri kegiatan baru berhasil dibuat"
+                    },
+                    "403": {
+                        "description": "Admin only"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/gallery/{id}": {
+            "put": {
+                "tags": [
+                    "Gallery"
+                ],
+                "summary": "Edit a gallery activity",
+                "operationId": "cf8099d3010b446c6ed934426242ddd2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Activity Name"
+                                    },
+                                    "activity_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-08-15"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Galeri kegiatan berhasil diubah"
+                    },
+                    "403": {
+                        "description": "Admin only"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Gallery"
+                ],
+                "summary": "Delete a gallery activity",
+                "operationId": "2cf29d751b9b45dfe3aa6f936f5cd878",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Galeri kegiatan berhasil dihapus"
+                    },
+                    "403": {
+                        "description": "Admin only"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/gallery/{id}": {
+            "get": {
+                "tags": [
+                    "Gallery"
+                ],
+                "summary": "Get a single gallery activity with its media",
+                "operationId": "ca6406bc72efd443f0be67ae8bfdd809",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Galeri kegiatan ditemukan"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/gallery": {
+            "get": {
+                "tags": [
+                    "Gallery"
+                ],
+                "summary": "Get all gallery activities sorted by activity date (latest first)",
+                "operationId": "919d4ef7e5a40cc7ba90818407304d5c",
+                "responses": {
+                    "200": {
+                        "description": "Semua galeri kegiatan berhasil ditemukan"
+                    }
+                }
+            }
+        },
+        "/gallery/{id}/media": {
+            "post": {
+                "tags": [
+                    "Gallery"
+                ],
+                "summary": "Add media (image/video) to a gallery",
+                "operationId": "1611259667a185240facfc3dd1303b75",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "media"
+                                ],
+                                "properties": {
+                                    "media": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Media berhasil ditambahkan"
+                    },
+                    "403": {
+                        "description": "Admin only"
+                    },
+                    "404": {
+                        "description": "Gallery not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Gallery"
+                ],
+                "summary": "Delete media from gallery",
+                "operationId": "dddc578926ae0e647c17aa5d0e3f8f1e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Media berhasil dihapus"
+                    },
+                    "403": {
+                        "description": "Admin only"
+                    },
+                    "404": {
+                        "description": "Media not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/news": {
             "get": {
                 "tags": [
@@ -413,6 +681,10 @@
         {
             "name": "News",
             "description": "API endpoints for news related operations"
+        },
+        {
+            "name": "Gallery",
+            "description": "API endpoints for gallery related operations"
         }
     ]
 }
