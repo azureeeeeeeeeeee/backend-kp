@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\NewsController;
+use App\Models\Facility;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,4 +37,13 @@ Route::group(['prefix' => 'gallery'], function () {
 
     Route::post('/{id}/media', [GalleryController::class, 'addImage'])->middleware('auth:sanctum');
     Route::delete('/{id}/media', [GalleryController::class, 'deleteImage'])->middleware('auth:sanctum');
+});
+
+Route::group(['prefix' => 'facility'], function () {
+    Route::get('', [FacilityController::class, 'index']);
+    Route::get('/{id}', [FacilityController::class, 'show']);
+
+    Route::post('', [FacilityController::class, 'store'])->middleware('auth:sanctum');
+    Route::post('/{id}', [FacilityController::class, 'update'])->middleware('auth:sanctum');
+    Route::delete('/{id}', [FacilityController::class, 'destroy'])->middleware('auth:sanctum');
 });

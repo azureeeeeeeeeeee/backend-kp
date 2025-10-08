@@ -192,6 +192,325 @@
                 }
             }
         },
+        "/api/facilities": {
+            "get": {
+                "tags": [
+                    "Facilities"
+                ],
+                "summary": "Get all facilities",
+                "description": "Retrieve a paginated list of facilities ordered by latest updates.",
+                "operationId": "0fafce31b15e8348016098feb2235906",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of facilities retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Berhasil mengambil semua daftar"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Ruang Kelas Lama"
+                                                            },
+                                                            "path": {
+                                                                "type": "string",
+                                                                "example": "facilities/abc123.jpg"
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "example": "2025-10-08T05:00:00.000000Z"
+                                                            },
+                                                            "updated_at": {
+                                                                "type": "string",
+                                                                "example": "2025-10-08T05:10:00.000000Z"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 25
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Facilities"
+                ],
+                "summary": "Create a new facility",
+                "description": "Admin-only endpoint to create a new facility with image upload.",
+                "operationId": "9f8d6995d5e85b8736f862457f975c8f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "image"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Ruang Kelas Lama"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Facility created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Berhasil menambahkan fasilitas"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Ruang Kelas Lama"
+                                                },
+                                                "path": {
+                                                    "type": "string",
+                                                    "example": "facilities/xyz123.jpg"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden (Admin only)"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/facilities/{id}": {
+            "get": {
+                "tags": [
+                    "Facilities"
+                ],
+                "summary": "Get facility by ID",
+                "description": "Retrieve a specific facility by its ID.",
+                "operationId": "94a8a02f21954681da6544dc9329792d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Facility ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Facility found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Fasilitas dengan id 1 berhasil ditemukan"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Ruang Kelas Lama"
+                                                },
+                                                "path": {
+                                                    "type": "string",
+                                                    "example": "facilities/abc.jpg"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Facility not found"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Facilities"
+                ],
+                "summary": "Update facility by ID",
+                "description": "Admin-only endpoint to update a facility. Image is optional.",
+                "operationId": "27da334686cd695de1cb4a8a1b911a33",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Facility ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Ruang Kelas Baru"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Facility updated successfully"
+                    },
+                    "403": {
+                        "description": "Forbidden (Admin only)"
+                    },
+                    "404": {
+                        "description": "Facility not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Facilities"
+                ],
+                "summary": "Delete a facility",
+                "description": "Admin-only endpoint to delete a facility by ID.",
+                "operationId": "1460bad27c15b6becd12767f53a2c9a3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Facility ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Facility deleted successfully"
+                    },
+                    "403": {
+                        "description": "Forbidden (Admin only)"
+                    },
+                    "404": {
+                        "description": "Facility not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/gallery": {
             "post": {
                 "tags": [
@@ -212,6 +531,10 @@
                                     "name": {
                                         "type": "string",
                                         "example": "Lomba 17 Agustus"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Deskripsi lomba 17 agustus"
                                     },
                                     "activity_date": {
                                         "type": "string",
@@ -265,6 +588,10 @@
                                     "name": {
                                         "type": "string",
                                         "example": "Updated Activity Name"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Deskripsi lomba 17 agustus"
                                     },
                                     "activity_date": {
                                         "type": "string",
@@ -685,6 +1012,10 @@
         {
             "name": "Gallery",
             "description": "API endpoints for gallery related operations"
+        },
+        {
+            "name": "Facilities",
+            "description": "Facilities"
         }
     ]
 }

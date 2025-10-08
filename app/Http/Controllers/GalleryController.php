@@ -22,6 +22,7 @@ class GalleryController extends Controller
      *         @OA\JsonContent(
      *             required={"name","activity_date"},
      *             @OA\Property(property="name", type="string", example="Lomba 17 Agustus"),
+     *             @OA\Property(property="description", type="string", example="Deskripsi lomba 17 agustus"),
      *             @OA\Property(property="activity_date", type="string", format="date", example="2025-08-10")
      *         )
      *     ),
@@ -37,6 +38,7 @@ class GalleryController extends Controller
         }
         $data = $request->validate([
             "name" => "required|string|min:8",
+            "description" => "required|string|min:20|max:500",
             "activity_date" => "required|date"
         ]);
 
@@ -110,6 +112,7 @@ class GalleryController extends Controller
      *     @OA\RequestBody(
      *         @OA\JsonContent(
      *             @OA\Property(property="name", type="string", example="Updated Activity Name"),
+     *             @OA\Property(property="description", type="string",  example="Deskripsi lomba 17 agustus"),
      *             @OA\Property(property="activity_date", type="string", format="date", example="2025-08-15")
      *         )
      *     ),
@@ -135,6 +138,7 @@ class GalleryController extends Controller
         
         $data = $request->validate([
             "name" => "nullable|string|min:8",
+            "description" => "nullable|string|min:20|max:300",
             "activity_date" => "nullable|date"
         ]);
         
