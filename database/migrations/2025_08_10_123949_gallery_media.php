@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('gallery_id')->constrained()->onDelete('cascade');
-            $table->date('path');
+            $table->string('path');
 
             $table->timestamps();
         });
