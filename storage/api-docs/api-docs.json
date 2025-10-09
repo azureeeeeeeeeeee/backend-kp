@@ -6,6 +6,343 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/admissions": {
+            "get": {
+                "tags": [
+                    "Admissions"
+                ],
+                "summary": "List admissions (paginated)",
+                "description": "Get paginated list of admissions. Admin only.",
+                "operationId": "dd7640d2fbc9dbebbc56e083c89f2ebd",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Admin only"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admissions"
+                ],
+                "summary": "Create admission",
+                "description": "Create a new admission. Uploads files (kk, akta, foto).",
+                "operationId": "2b99cef768744362c4f3dabc47c35369",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AdmissionCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Admission"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/admissions/{id}": {
+            "get": {
+                "tags": [
+                    "Admissions"
+                ],
+                "summary": "Get admission by ID",
+                "operationId": "20e5444a83306b21044202df44139c54",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Admission"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "403": {
+                        "description": "Admin only"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admissions"
+                ],
+                "summary": "Update admission",
+                "description": "Update existing admission. Admin only.",
+                "operationId": "b3992136eaecefe37c8e14f0a173a648",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AdmissionUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Admission"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "403": {
+                        "description": "Admin only"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admissions"
+                ],
+                "summary": "Delete admission",
+                "description": "Delete admission and its files. Admin only.",
+                "operationId": "d920aa6027d5f73c5423199d04d55492",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "403": {
+                        "description": "Admin only"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admissions/check/{code}": {
+            "get": {
+                "tags": [
+                    "Admissions"
+                ],
+                "summary": "Check admission status by code",
+                "operationId": "1268fd8005babf654de490002afbccc3",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "fullname": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/api/admissions/data/filter": {
+            "get": {
+                "tags": [
+                    "Admissions"
+                ],
+                "summary": "Filter admissions by status and year, sorted alphabetically",
+                "operationId": "ad94a7a4efd6ff81ec98a78899cb20ef",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/auth/login": {
             "post": {
                 "tags": [
@@ -1000,7 +1337,263 @@
             }
         }
     },
+    "components": {
+        "schemas": {
+            "Admission": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "full_name": {
+                        "type": "string",
+                        "example": "Budi Santoso"
+                    },
+                    "place_of_birth": {
+                        "type": "string",
+                        "example": "Samarinda"
+                    },
+                    "date_of_birth": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2008-05-14"
+                    },
+                    "gender": {
+                        "type": "string",
+                        "example": "laki-laki"
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "religion": {
+                        "type": "string",
+                        "example": "Islam"
+                    },
+                    "father_name": {
+                        "type": "string"
+                    },
+                    "father_phone": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "mother_name": {
+                        "type": "string"
+                    },
+                    "mother_phone": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "guardian_name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "guardian_phone": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "paud": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "file_kk": {
+                        "description": "Storage path to KK file",
+                        "type": "string"
+                    },
+                    "file_akta": {
+                        "description": "Storage path to Akta file",
+                        "type": "string"
+                    },
+                    "file_foto": {
+                        "description": "Storage path to Foto file",
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "pending"
+                    },
+                    "year": {
+                        "type": "integer",
+                        "example": 2025
+                    },
+                    "admission_code": {
+                        "type": "string",
+                        "example": "2025-BUDI-4832"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "AdmissionCreateRequest": {
+                "required": [
+                    "full_name",
+                    "place_of_birth",
+                    "date_of_birth",
+                    "gender",
+                    "address",
+                    "religion",
+                    "father_name",
+                    "mother_name",
+                    "file_kk",
+                    "file_akta",
+                    "file_foto",
+                    "year"
+                ],
+                "properties": {
+                    "full_name": {
+                        "type": "string"
+                    },
+                    "place_of_birth": {
+                        "type": "string"
+                    },
+                    "date_of_birth": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "gender": {
+                        "type": "string",
+                        "enum": [
+                            "laki-laki",
+                            "perempuan"
+                        ]
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "religion": {
+                        "type": "string"
+                    },
+                    "father_name": {
+                        "type": "string"
+                    },
+                    "father_phone": {
+                        "type": "string"
+                    },
+                    "mother_name": {
+                        "type": "string"
+                    },
+                    "mother_phone": {
+                        "type": "string"
+                    },
+                    "guardian_name": {
+                        "type": "string"
+                    },
+                    "guardian_phone": {
+                        "type": "string"
+                    },
+                    "paud": {
+                        "type": "string"
+                    },
+                    "file_kk": {
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "file_akta": {
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "file_foto": {
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "year": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "AdmissionUpdateRequest": {
+                "properties": {
+                    "full_name": {
+                        "type": "string"
+                    },
+                    "place_of_birth": {
+                        "type": "string"
+                    },
+                    "date_of_birth": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "gender": {
+                        "type": "string",
+                        "enum": [
+                            "laki-laki",
+                            "perempuan"
+                        ]
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "religion": {
+                        "type": "string"
+                    },
+                    "father_name": {
+                        "type": "string"
+                    },
+                    "father_phone": {
+                        "type": "string"
+                    },
+                    "mother_name": {
+                        "type": "string"
+                    },
+                    "mother_phone": {
+                        "type": "string"
+                    },
+                    "guardian_name": {
+                        "type": "string"
+                    },
+                    "guardian_phone": {
+                        "type": "string"
+                    },
+                    "paud": {
+                        "type": "string"
+                    },
+                    "file_kk": {
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "file_akta": {
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "file_foto": {
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "diterima",
+                            "ditolak"
+                        ]
+                    },
+                    "year": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
     "tags": [
+        {
+            "name": "Admissions",
+            "description": "Admissions management"
+        },
         {
             "name": "Auth",
             "description": "API endpoints for user authentication"

@@ -58,6 +58,6 @@ Route::group(['prefix' => 'admission'], function () {
     Route::put('/{id}', [AdmissionController::class, 'update'])->middleware('auth:sanctum');
     Route::delete('/{id}', [AdmissionController::class, 'destroy'])->middleware('auth:sanctum');
 
-    Route::post('/{code}', [AdmissionController::class, 'checkAdmissionStatus']);
-    Route::post('/filter', [AdmissionController::class, 'filter'])->middleware('auth:sanctum');
+    Route::post('/{code}/check', [AdmissionController::class, 'checkAdmissionStatus']);
+    Route::get('/data/filter', [AdmissionController::class, 'filter'])->middleware('auth:sanctum');
 });

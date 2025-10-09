@@ -8,9 +8,125 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
+
+
+
+
+
+
+/**
+ * @OA\Schema(
+ *   schema="Admission",
+ *   type="object",
+ *   @OA\Property(property="id", type="integer", example=1),
+ *   @OA\Property(property="full_name", type="string", example="Budi Santoso"),
+ *   @OA\Property(property="place_of_birth", type="string", example="Samarinda"),
+ *   @OA\Property(property="date_of_birth", type="string", format="date", example="2008-05-14"),
+ *   @OA\Property(property="gender", type="string", example="laki-laki"),
+ *   @OA\Property(property="address", type="string"),
+ *   @OA\Property(property="religion", type="string", example="Islam"),
+ *   @OA\Property(property="father_name", type="string"),
+ *   @OA\Property(property="father_phone", type="string", nullable=true),
+ *   @OA\Property(property="mother_name", type="string"),
+ *   @OA\Property(property="mother_phone", type="string", nullable=true),
+ *   @OA\Property(property="guardian_name", type="string", nullable=true),
+ *   @OA\Property(property="guardian_phone", type="string", nullable=true),
+ *   @OA\Property(property="paud", type="string", nullable=true),
+ *   @OA\Property(property="file_kk", type="string", description="Storage path to KK file"),
+ *   @OA\Property(property="file_akta", type="string", description="Storage path to Akta file"),
+ *   @OA\Property(property="file_foto", type="string", description="Storage path to Foto file"),
+ *   @OA\Property(property="status", type="string", example="pending"),
+ *   @OA\Property(property="year", type="integer", example=2025),
+ *   @OA\Property(property="admission_code", type="string", example="2025-BUDI-4832"),
+ *   @OA\Property(property="created_at", type="string", format="date-time"),
+ *   @OA\Property(property="updated_at", type="string", format="date-time"),
+ * )
+ *
+ * @OA\Schema(
+ *   schema="AdmissionCreateRequest",
+ *   type="object",
+ *   required={"full_name","place_of_birth","date_of_birth","gender","address","religion","father_name","mother_name","file_kk","file_akta","file_foto","year"},
+ *   @OA\Property(property="full_name", type="string"),
+ *   @OA\Property(property="place_of_birth", type="string"),
+ *   @OA\Property(property="date_of_birth", type="string", format="date"),
+ *   @OA\Property(property="gender", type="string", enum={"laki-laki","perempuan"}),
+ *   @OA\Property(property="address", type="string"),
+ *   @OA\Property(property="religion", type="string"),
+ *   @OA\Property(property="father_name", type="string"),
+ *   @OA\Property(property="father_phone", type="string"),
+ *   @OA\Property(property="mother_name", type="string"),
+ *   @OA\Property(property="mother_phone", type="string"),
+ *   @OA\Property(property="guardian_name", type="string"),
+ *   @OA\Property(property="guardian_phone", type="string"),
+ *   @OA\Property(property="paud", type="string"),
+ *   @OA\Property(property="file_kk", type="string", format="binary"),
+ *   @OA\Property(property="file_akta", type="string", format="binary"),
+ *   @OA\Property(property="file_foto", type="string", format="binary"),
+ *   @OA\Property(property="year", type="integer")
+ * )
+ *
+ * @OA\Schema(
+ *   schema="AdmissionUpdateRequest",
+ *   type="object",
+ *   @OA\Property(property="full_name", type="string"),
+ *   @OA\Property(property="place_of_birth", type="string"),
+ *   @OA\Property(property="date_of_birth", type="string", format="date"),
+ *   @OA\Property(property="gender", type="string", enum={"laki-laki","perempuan"}),
+ *   @OA\Property(property="address", type="string"),
+ *   @OA\Property(property="religion", type="string"),
+ *   @OA\Property(property="father_name", type="string"),
+ *   @OA\Property(property="father_phone", type="string"),
+ *   @OA\Property(property="mother_name", type="string"),
+ *   @OA\Property(property="mother_phone", type="string"),
+ *   @OA\Property(property="guardian_name", type="string"),
+ *   @OA\Property(property="guardian_phone", type="string"),
+ *   @OA\Property(property="paud", type="string"),
+ *   @OA\Property(property="file_kk", type="string", format="binary"),
+ *   @OA\Property(property="file_akta", type="string", format="binary"),
+ *   @OA\Property(property="file_foto", type="string", format="binary"),
+ *   @OA\Property(property="status", type="string", enum={"pending","diterima","ditolak"}),
+ *   @OA\Property(property="year", type="integer")
+ * )
+ *
+ * @OA\Tag(
+ *   name="Admissions",
+ *   description="Admissions management"
+ * )
+ *
+ * @OA\SecurityScheme(
+ *   securityScheme="bearerAuth",
+ *   type="http",
+ *   scheme="bearer",
+ *   bearerFormat="JWT"
+ * )
+ */
 class AdmissionController extends Controller
 {
-    //
+    /**
+     * @OA\Get(
+     *   path="/api/admissions",
+     *   tags={"Admissions"},
+     *   summary="List admissions (paginated)",
+     *   description="Get paginated list of admissions. Admin only.",
+     *   security={{"bearerAuth":{}}},
+     *   @OA\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Page number",
+     *     @OA\Schema(type="integer")
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Successful",
+     *     @OA\JsonContent(
+     *       type="object",
+     *       @OA\Property(property="message", type="string"),
+     *       @OA\Property(property="data", type="object")
+     *     )
+     *   ),
+     *   @OA\Response(response=403, description="Admin only")
+     * )
+     */
     public function index() {
         if (Gate::denies("create", Admission::class)) {
             return response()->json([
@@ -29,6 +145,39 @@ class AdmissionController extends Controller
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * @OA\Get(
+     *   path="/api/admissions/{id}",
+     *   tags={"Admissions"},
+     *   summary="Get admission by ID",
+     *   security={{"bearerAuth":{}}},
+     *   @OA\Parameter(
+     *     name="id",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(type="integer")
+     *   ),
+     *   @OA\Response(response=200, description="Successful", @OA\JsonContent(
+     *       @OA\Property(property="message", type="string"),
+     *       @OA\Property(property="data", ref="#/components/schemas/Admission")
+     *   )),
+     *   @OA\Response(response=404, description="Not found"),
+     *   @OA\Response(response=403, description="Admin only")
+     * )
+     */
     public function show($id) {
         if (Gate::denies("create", Admission::class)) {
             return response()->json([
@@ -55,6 +204,28 @@ class AdmissionController extends Controller
     
     
     
+
+
+    /**
+     * @OA\Post(
+     *   path="/api/admissions",
+     *   tags={"Admissions"},
+     *   summary="Create admission",
+     *   description="Create a new admission. Uploads files (kk, akta, foto).",
+     *   @OA\RequestBody(
+     *     required=true,
+     *     @OA\MediaType(
+     *       mediaType="multipart/form-data",
+     *       @OA\Schema(ref="#/components/schemas/AdmissionCreateRequest")
+     *     )
+     *   ),
+     *   @OA\Response(response=201, description="Created", @OA\JsonContent(
+     *       @OA\Property(property="message", type="string"),
+     *       @OA\Property(property="data", ref="#/components/schemas/Admission")
+     *   )),
+     *   @OA\Response(response=422, description="Validation error")
+     * )
+     */
     public function store(Request $request) {
         // if (!$request->user()) {
         //     return response()->json([
@@ -126,6 +297,31 @@ class AdmissionController extends Controller
 
 
 
+
+
+
+    /**
+     * @OA\Put(
+     *   path="/api/admissions/{id}",
+     *   tags={"Admissions"},
+     *   summary="Update admission",
+     *   description="Update existing admission. Admin only.",
+     *   security={{"bearerAuth":{}}},
+     *   @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *   @OA\RequestBody(
+     *     @OA\MediaType(
+     *       mediaType="multipart/form-data",
+     *       @OA\Schema(ref="#/components/schemas/AdmissionUpdateRequest")
+     *     )
+     *   ),
+     *   @OA\Response(response=200, description="Updated", @OA\JsonContent(
+     *       @OA\Property(property="message", type="string"),
+     *       @OA\Property(property="data", ref="#/components/schemas/Admission")
+     *   )),
+     *   @OA\Response(response=404, description="Not found"),
+     *   @OA\Response(response=403, description="Admin only")
+     * )
+     */
     public function update(Request $request, int $id) {
         if (Gate::denies("create", Admission::class)) {
             return response()->json([
@@ -188,6 +384,24 @@ class AdmissionController extends Controller
 
 
 
+
+
+
+
+
+    /**
+     * @OA\Delete(
+     *   path="/api/admissions/{id}",
+     *   tags={"Admissions"},
+     *   summary="Delete admission",
+     *   description="Delete admission and its files. Admin only.",
+     *   security={{"bearerAuth":{}}},
+     *   @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *   @OA\Response(response=200, description="Deleted", @OA\JsonContent(@OA\Property(property="message", type="string"))),
+     *   @OA\Response(response=404, description="Not found"),
+     *   @OA\Response(response=403, description="Admin only")
+     * )
+     */
     public function destroy(int $id) {
         if (Gate::denies("create", Admission::class)) {
             return response()->json([
@@ -220,6 +434,22 @@ class AdmissionController extends Controller
 
 
 
+
+
+    /**
+     * @OA\Get(
+     *   path="/api/admissions/check/{code}",
+     *   tags={"Admissions"},
+     *   summary="Check admission status by code",
+     *   @OA\Parameter(name="code", in="path", required=true, @OA\Schema(type="string")),
+     *   @OA\Response(response=200, description="Found", @OA\JsonContent(
+     *       @OA\Property(property="message", type="string"),
+     *       @OA\Property(property="status", type="string"),
+     *       @OA\Property(property="fullname", type="string")
+     *   )),
+     *   @OA\Response(response=404, description="Not found")
+     * )
+     */
     public function checkAdmissionStatus($code) {
         $admission = Admission::where('admission_code', $code)->first();
         if (!$admission) {
@@ -240,6 +470,19 @@ class AdmissionController extends Controller
 
 
 
+
+    /**
+     * @OA\Get(
+     *   path="/api/admissions/data/filter",
+     *   tags={"Admissions"},
+     *   summary="Filter admissions by status and year, sorted alphabetically",
+     *   security={{"bearerAuth":{}}},
+     *   @OA\Parameter(name="status", in="query", @OA\Schema(type="string")),
+     *   @OA\Parameter(name="year", in="query", @OA\Schema(type="integer")),
+     *   @OA\Parameter(name="page", in="query", @OA\Schema(type="integer")),
+     *   @OA\Response(response=200, description="Successful", @OA\JsonContent(type="object"))
+     * )
+     */
     public function filter(Request $request)
     {
         if (Gate::denies("create", Admission::class)) {
