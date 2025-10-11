@@ -39,19 +39,25 @@ class AuthController extends Controller
         ]);
 
         $user = User::where('email', $request->email)->first();
+
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        $data = [
-            'message' => "user berhasil login",
+        return response()->json([
+            'message' => 'User berhasil login',
             'token' => $token,
-        ];
-
-        return response()->json($data, 200)->cookie('TOKENID', $token, 1440, '/', null, false, true);
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role, // 🔹 kirim role ke frontend
+            ],
+        ], 200)->cookie('TOKENID', $token, 1440, '/', null, false, true);
     }
+
 
 
 
@@ -80,7 +86,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'nip' => 'optional|string|max:20|unique:users',
+            'nip' => 'nullable|string|max:20|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ]);
@@ -90,13 +96,22 @@ class AuthController extends Controller
             'nip' => $request->nip,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => "user",
+            'role' => 'user', // 🔹 default role user
         ]);
 
-        $data = [
-            'message' => "User registered successfully",
-        ];
-        return response()->json($data, 201);
+        // Buat token langsung biar auto-login setelah register
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'User registered successfully',
+            'token' => $token,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role, // 🔹 role dikirim ke frontend
+            ],
+        ], 201);
     }
 
 
