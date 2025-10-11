@@ -1,8 +1,12 @@
 <?php
 
+use App\Http\Controllers\AdmissionController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\NewsController;
+use App\Models\Admission;
+use App\Models\Facility;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,4 +39,25 @@ Route::group(['prefix' => 'gallery'], function () {
 
     Route::post('/{id}/media', [GalleryController::class, 'addImage'])->middleware('auth:sanctum');
     Route::delete('/{id}/media', [GalleryController::class, 'deleteImage'])->middleware('auth:sanctum');
+});
+
+Route::group(['prefix' => 'facility'], function () {
+    Route::get('', [FacilityController::class, 'index']);
+    Route::get('/{id}', [FacilityController::class, 'show']);
+
+    Route::post('', [FacilityController::class, 'store'])->middleware('auth:sanctum');
+    Route::post('/{id}', [FacilityController::class, 'update'])->middleware('auth:sanctum');
+    Route::delete('/{id}', [FacilityController::class, 'destroy'])->middleware('auth:sanctum');
+});
+
+Route::group(['prefix' => 'admission'], function () {
+    Route::get('', [AdmissionController::class, 'index'])->middleware('auth:sanctum');
+    Route::get('/{id}', [AdmissionController::class, 'show'])->middleware('auth:sanctum');
+
+    Route::post('', [AdmissionController::class, 'store'])->middleware('auth:sanctum');
+    Route::put('/{id}', [AdmissionController::class, 'update'])->middleware('auth:sanctum');
+    Route::delete('/{id}', [AdmissionController::class, 'destroy'])->middleware('auth:sanctum');
+
+    Route::post('/{code}/check', [AdmissionController::class, 'checkAdmissionStatus']);
+    Route::get('/data/filter', [AdmissionController::class, 'filter'])->middleware('auth:sanctum');
 });
