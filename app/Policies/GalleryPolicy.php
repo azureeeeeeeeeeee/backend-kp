@@ -9,56 +9,51 @@ use Illuminate\Auth\Access\Response;
 class GalleryPolicy
 {
     /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Gallery $gallery): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can create models.
+     * Tentukan apakah user dapat membuat galeri.
      */
     public function create(User $user)
     {
-        return $user->role == 'admin' ? Response::allow() : Response::deny('Admin only');
-    }
-    
-    /**
-     * Determine whether the user can update the model.
-    */
-    public function update(User $user)
-    {
-        return $user->role == 'admin' ? Response::allow() : Response::deny('Admin only');
-    }
-    
-    /**
-     * Determine whether the user can delete the model.
-    */
-    public function delete(User $user)
-    {
-        return $user->role == 'admin' ? Response::allow() : Response::deny('Admin only');
+        return $user->role === 'admin'
+            ? Response::allow()
+            : Response::deny('Admin only');
     }
 
     /**
-     * Determine whether the user can restore the model.
+     * Tentukan apakah user dapat memperbarui galeri.
      */
-    public function restore(User $user): bool
+    public function update(User $user)
+    {
+        return $user->role === 'admin'
+            ? Response::allow()
+            : Response::deny('Admin only');
+    }
+
+    public function delete(User $user)
+    {
+        return $user->role === 'admin'
+            ? Response::allow()
+            : Response::deny('Admin only');
+    }
+
+
+    /**
+     * Opsi lainnya (tidak digunakan tapi disiapkan biar Laravel tidak error)
+     */
+    public function viewAny(User $user): bool
+    {
+        return true;
+    }
+
+    public function view(User $user, Gallery $gallery): bool
+    {
+        return true;
+    }
+
+    public function restore(User $user, Gallery $gallery): bool
     {
         return false;
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
     public function forceDelete(User $user, Gallery $gallery): bool
     {
         return false;

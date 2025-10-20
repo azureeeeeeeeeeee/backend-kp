@@ -36,18 +36,28 @@ class GalleryController extends Controller
                 "error" => "Admin only"
             ], 403);
         }
-        $data = $request->validate([
-            "name" => "required|string|min:8",
-            "description" => "required|string|min:20|max:500",
-            "activity_date" => "required|date"
-        ]);
 
-        Gallery::create($data);
+       try {
+    $data = $request->validate([
+        "name" => "required|string|min:8",
+        "description" => "required|string|min:20|max:500",
+        "activity_date" => "required|date"
+    ]);
 
-        return response()->json([
-            "message" => "Galeri kegiatan baru berhasil dibuat"
-        ]);
+    $gallery = Gallery::create($data);
+
+    return response()->json([
+        "message" => "Galeri kegiatan baru berhasil dibuat",
+        "data" => $gallery
+    ]);
+} catch (\Illuminate\Validation\ValidationException $e) {
+    return response()->json([
+        "error" => "Validasi gagal",
+        "details" => $e->errors()
+    ], 422);
+}
     }
+
 
 
 

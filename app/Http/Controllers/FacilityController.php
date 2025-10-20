@@ -49,10 +49,10 @@ class FacilityController extends Controller
      */
     public function index()
     {
-        $facilities = Facility::orderBy("updated_at", "desc")->paginate(10);
+        $facilities = Facility::orderBy("updated_at", "desc")->get(); // Gunakan get() bukan paginate()
         return response()->json([
             "message" => "Berhasil mengambil semua daftar",
-            "data" => $facilities
+            "data" => $facilities // Langsung return array, bukan pagination object
         ], 200);
     }
 
@@ -116,7 +116,7 @@ class FacilityController extends Controller
         }
 
         $request->validate([
-            "name" => "required|string|min:8|max:50",
+            "name" => "required|string|min:2|max:50",
             "image" => 'required|image|mimes:jpeg,png,jpg'
         ]);
 
@@ -254,7 +254,7 @@ class FacilityController extends Controller
         };
 
         $data = $request->validate([
-            "name" => "required|string|min:8|max:50",
+            "name" => "required|string|min:2|max:50",
             "image" => 'nullable|image|mimes:jpeg,png,jpg'
         ]);
 

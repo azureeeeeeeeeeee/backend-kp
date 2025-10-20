@@ -11,56 +11,56 @@ class AdmissionPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(?User $user): bool
     {
-        return false;
+        return $user->role === 'admin'; // semua boleh lihat daftar data
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Admission $admission): bool
+    public function view(?User $user, Admission $admission): bool
     {
-        return false;
+        return true; // semua boleh lihat detail pendaftaran
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): Response
+    public function create(?User $user): Response
     {
-        return $user->role == 'admin' ? Response::allow() : Response::deny('Admin only');
+        // semua boleh daftar (bahkan tanpa login)
+        return Response::allow();
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Admission $admission): bool
+    public function update(User $user, Admission $admission): Response
     {
-        return false;
+        // hanya admin yang boleh verifikasi/update data
+        return $user->role === 'admin'
+            ? Response::allow()
+            : Response::deny('Hanya admin yang bisa mengubah data pendaftaran');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Admission $admission): bool
+    public function delete(User $user, Admission $admission): Response
     {
-        return false;
+        return $user->role === 'admin'
+            ? Response::allow()
+            : Response::deny('Hanya admin yang bisa menghapus data pendaftaran');
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
     public function restore(User $user, Admission $admission): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
     public function forceDelete(User $user, Admission $admission): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 }
