@@ -19,6 +19,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/send-otp', [AuthController::class, 'sendOtp']);
     Route::post('/forgot-password', [AuthController::class, 'changePasswords']);
+    Route::put('/profile', [AuthController::class, 'editProfile'])->middleware('auth:sanctum');
 });
 
 Route::group(['prefix'=> 'news'], function () {

@@ -438,7 +438,7 @@ class AdmissionController extends Controller
 
     /**
      * @OA\Get(
-     *   path="/api/admissions/check/{code}",
+     *   path="/api/admissions/{code}/check",
      *   tags={"Admissions"},
      *   summary="Check admission status by code",
      *   @OA\Parameter(name="code", in="path", required=true, @OA\Schema(type="string")),

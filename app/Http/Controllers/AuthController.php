@@ -194,4 +194,71 @@ class AuthController extends Controller
             "message" => "Password berhasil diubah"
         ], 200);
     }
+
+
+    /**
+     * @OA\Put(
+     *     path="/api/auth/profile",
+     *     tags={"Auth"},
+     *     summary="Edit user profile",
+     *     description="Update user profile information (requires authentication)",
+     *     security={{"sanctum": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string", example="John Updated"),
+     *             @OA\Property(property="nip", type="string", example="1234567890"),
+     *             @OA\Property(property="email", type="string", format="email", example="newmail@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="newpassword123"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="newpassword123")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Profil berhasil diperbarui"),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=422, description="Validasi gagal"),
+     * )
+     */
+    public function editProfile(Request $request)
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'nip' => 'nullable|string|max:20|unique:users,nip,' . $user->id,
+            'email' => 'sometimes|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:8|confirmed',
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        // Update basic info
+        if (isset($validated['name'])) {
+            $user->name = $validated['name'];
+        }
+
+        if (isset($validated['nip'])) {
+            $user->nip = $validated['nip'];
+        }
+
+        if (isset($validated['email'])) {
+            $user->email = $validated['email'];
+        }
+
+        // Update password if provided
+        if (isset($validated['password'])) {
+            $user->password = Hash::make($validated['password']);
+        }
+
+        // Optional: handle avatar upload
+        if ($request->hasFile('avatar')) {
+            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+            $user->avatar = $avatarPath;
+        }
+
+        $user->save();
+
+        return response()->json([
+            'message' => 'Profil berhasil diperbarui',
+            'user' => $user
+        ], 200);
+    }
 }
