@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\StudentController;
 use App\Models\Admission;
 use App\Models\Facility;
 use Illuminate\Http\Request;
@@ -61,4 +62,14 @@ Route::group(['prefix' => 'admission'], function () {
 
     Route::post('/{code}/check', [AdmissionController::class, 'checkAdmissionStatus']);
     Route::get('/data/filter', [AdmissionController::class, 'filter'])->middleware('auth:sanctum');
+});
+
+
+Route::group(['prefix' => 'students'], function () {
+    Route::get('', [StudentController::class, 'index'])->middleware('auth:sanctum');
+    Route::get('/{nis}', [StudentController::class, 'show'])->middleware('auth:sanctum');
+
+    Route::post('', [StudentController::class, 'store'])->middleware('auth:sanctum');
+    Route::put('/{nis}', [StudentController::class, 'update'])->middleware('auth:sanctum');
+    Route::delete('/{nis}', [StudentController::class, 'destroy'])->middleware('auth:sanctum');
 });
