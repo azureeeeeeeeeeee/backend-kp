@@ -108,9 +108,27 @@ class AdmissionController extends Controller
         return response()->json(['message' => 'Data berhasil dihapus']);
     }
 
-    public function checkAdmissionStatus($code)
-    {
-        // semua orang bisa cek status
+
+
+
+
+
+
+    /**
+     * @OA\Get(
+     *   path="/api/admissions/{code}/check",
+     *   tags={"Admissions"},
+     *   summary="Check admission status by code",
+     *   @OA\Parameter(name="code", in="path", required=true, @OA\Schema(type="string")),
+     *   @OA\Response(response=200, description="Found", @OA\JsonContent(
+     *       @OA\Property(property="message", type="string"),
+     *       @OA\Property(property="status", type="string"),
+     *       @OA\Property(property="fullname", type="string")
+     *   )),
+     *   @OA\Response(response=404, description="Not found")
+     * )
+     */
+    public function checkAdmissionStatus($code) {
         $admission = Admission::where('admission_code', $code)->first();
 
         if (!$admission) {

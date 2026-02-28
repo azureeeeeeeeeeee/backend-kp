@@ -20,6 +20,10 @@ namespace App\Http\Controllers;
  *     name="Gallery",
  *     description="API endpoints for gallery related operations"
  * )
+ * @OA\Tag(
+ *     name="Students",
+ *     description="API endpoints for student related operations"
+ * )
  **/
 abstract class Controller
 {

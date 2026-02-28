@@ -7,6 +7,7 @@ use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PPDBSettingController; 
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\StudentController;
 use App\Models\Admission;
 use App\Models\Facility;
 use Illuminate\Http\Request;
@@ -21,6 +22,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/send-otp', [AuthController::class, 'sendOtp']);
     Route::post('/forgot-password', [AuthController::class, 'changePasswords']);
+    Route::put('/profile', [AuthController::class, 'editProfile'])->middleware('auth:sanctum');
 });
 
 Route::group(['prefix'=> 'news'], function () {
@@ -77,3 +79,14 @@ Route::group(['prefix' => 'teachers'], function () {
 // Routes PPDB Settings
 Route::get('/ppdb-setting', [PPDBSettingController::class, 'show']);
 Route::post('/ppdb-setting', [PPDBSettingController::class, 'update'])->middleware('auth:sanctum');
+Route::get('/data/filter', [AdmissionController::class, 'filter'])->middleware('auth:sanctum');
+
+
+Route::group(['prefix' => 'students'], function () {
+    Route::get('', [StudentController::class, 'index'])->middleware('auth:sanctum');
+    Route::get('/{nis}', [StudentController::class, 'show'])->middleware('auth:sanctum');
+
+    Route::post('', [StudentController::class, 'store'])->middleware('auth:sanctum');
+    Route::put('/{nis}', [StudentController::class, 'update'])->middleware('auth:sanctum');
+    Route::delete('/{nis}', [StudentController::class, 'destroy'])->middleware('auth:sanctum');
+});

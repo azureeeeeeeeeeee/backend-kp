@@ -249,13 +249,13 @@
                 ]
             }
         },
-        "/api/admissions/check/{code}": {
+        "/api/admissions/{code}/check": {
             "get": {
                 "tags": [
                     "Admissions"
                 ],
                 "summary": "Check admission status by code",
-                "operationId": "1268fd8005babf654de490002afbccc3",
+                "operationId": "4bb27233d88d8fab139ff86796488d27",
                 "parameters": [
                     {
                         "name": "code",
@@ -527,6 +527,67 @@
                         "description": "Token yang diberikan tidak valid"
                     }
                 }
+            }
+        },
+        "/api/auth/profile": {
+            "put": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Edit user profile",
+                "description": "Update user profile information (requires authentication)",
+                "operationId": "bbfee51bf0dd56c3cad2d14fb9072d7b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Updated"
+                                    },
+                                    "nip": {
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "newmail@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "newpassword123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "newpassword123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profil berhasil diperbarui"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/api/facilities": {
@@ -1335,6 +1396,306 @@
                     }
                 ]
             }
+        },
+        "/api/student": {
+            "get": {
+                "tags": [
+                    "Students"
+                ],
+                "summary": "Get paginated list of students",
+                "operationId": "fe72c47ee2b1a6420133493247b1475d",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of students"
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Students"
+                ],
+                "summary": "Create a new student",
+                "operationId": "613d90c63d75c1e33836cf89dbd422e8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "full_name",
+                                    "place_of_birth",
+                                    "nisn",
+                                    "date_of_birth",
+                                    "gender",
+                                    "address",
+                                    "religion",
+                                    "father_name",
+                                    "mother_name",
+                                    "file_foto",
+                                    "year"
+                                ],
+                                "properties": {
+                                    "full_name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "place_of_birth": {
+                                        "type": "string",
+                                        "example": "Jakarta"
+                                    },
+                                    "nisn": {
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    },
+                                    "date_of_birth": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2010-03-15"
+                                    },
+                                    "gender": {
+                                        "type": "string",
+                                        "enum": [
+                                            "laki-laki",
+                                            "perempuan"
+                                        ],
+                                        "example": "laki-laki"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "Jl. Merdeka No.10"
+                                    },
+                                    "religion": {
+                                        "type": "string",
+                                        "example": "Islam"
+                                    },
+                                    "father_name": {
+                                        "type": "string",
+                                        "example": "Budi"
+                                    },
+                                    "mother_name": {
+                                        "type": "string",
+                                        "example": "Siti"
+                                    },
+                                    "file_foto": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "year": {
+                                        "type": "integer",
+                                        "example": 2025
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Student created successfully"
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/student/{nis}": {
+            "get": {
+                "tags": [
+                    "Students"
+                ],
+                "summary": "Get student by NIS",
+                "operationId": "68008940078a379403697cdc80bfc575",
+                "parameters": [
+                    {
+                        "name": "nis",
+                        "in": "path",
+                        "description": "Student NIS",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "2025-001"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Student found"
+                    },
+                    "404": {
+                        "description": "Student not found"
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Students"
+                ],
+                "summary": "Update student data",
+                "operationId": "e280b3b5b2b97390cb188fafe5476783",
+                "parameters": [
+                    {
+                        "name": "nis",
+                        "in": "path",
+                        "description": "Student NIS",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "2025-001"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "nisn": {
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    },
+                                    "full_name": {
+                                        "type": "string",
+                                        "example": "John Doe Updated"
+                                    },
+                                    "place_of_birth": {
+                                        "type": "string",
+                                        "example": "Samarinda"
+                                    },
+                                    "date_of_birth": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2010-03-15"
+                                    },
+                                    "gender": {
+                                        "type": "string",
+                                        "enum": [
+                                            "laki-laki",
+                                            "perempuan"
+                                        ],
+                                        "example": "perempuan"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "Jl. Baru No.20"
+                                    },
+                                    "religion": {
+                                        "type": "string",
+                                        "example": "Kristen"
+                                    },
+                                    "father_name": {
+                                        "type": "string",
+                                        "example": "Andi"
+                                    },
+                                    "mother_name": {
+                                        "type": "string",
+                                        "example": "Rina"
+                                    },
+                                    "file_foto": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "year": {
+                                        "type": "integer",
+                                        "example": 2025
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Student updated successfully"
+                    },
+                    "404": {
+                        "description": "Student not found"
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Students"
+                ],
+                "summary": "Delete a student",
+                "operationId": "987bce347899397d544d61884c22e3d3",
+                "parameters": [
+                    {
+                        "name": "nis",
+                        "in": "path",
+                        "description": "Student NIS",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "2025-001"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Student deleted successfully"
+                    },
+                    "404": {
+                        "description": "Student not found"
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -1605,6 +1966,10 @@
         {
             "name": "Gallery",
             "description": "API endpoints for gallery related operations"
+        },
+        {
+            "name": "Students",
+            "description": "API endpoints for student related operations"
         },
         {
             "name": "Facilities",

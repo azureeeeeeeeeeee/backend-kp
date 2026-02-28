@@ -23,7 +23,7 @@ class OtpMail extends Mailable
     {
         //
         $this->content = $content;
-        $this->baseURL = env("BASE_URL");
+        $this->baseURL = env("FE_URL");
     }
 
     /**
